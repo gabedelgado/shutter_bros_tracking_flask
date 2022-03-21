@@ -3,12 +3,13 @@ from pymongo import MongoClient
 from flask_mongoengine import MongoEngine
 from models import User
 from moreRoutes import testpage
+from routes.orderRoutes import order
 
 app = Flask(__name__)
 
 # separate routes into different files like this, add url prefix like this.
 app.register_blueprint(testpage, url_prefix="/test")
-
+app.register_blueprint(order, url_prefix="/api/order")
 # connect to mongodb like this
 client = MongoClient("localhost", 27017)
 app.config['MONGODB_SETTINGS'] = {
