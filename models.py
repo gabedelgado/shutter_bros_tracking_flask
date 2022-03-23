@@ -1,10 +1,33 @@
 from enum import Enum
 from mongoengine import Document, StringField, EnumField
+from bcrypt import gensalt, hashpw, checkpw
+import jwt
 
 
 class User(Document):
-    name = StringField()
-    email = StringField()
+    username = StringField()
+    password = StringField()
+
+    def login(self, username, password):
+        user = User.objects(username=username)
+
+        if not user:
+            return "couldnt find anyone with that username"
+        elif (not checkpw(password.encode("utf-8"), user[0].password.encode("utf-8"))):
+            return "the passwords did not match"
+        else:
+            token = jwt.encode(
+                {"user": str(user[0].id)}, "CHANGETHISPASSWORDTODOTENVSTUFF", algorithm="HS256")
+            return token
+
+    def signup(self, username, password):
+        if User.objects(username=username):
+            return False
+        else:
+            salt = gensalt()
+            hashedpass = hashpw(password.encode("utf-8"), salt)
+            User(username=username, password=hashedpass).save()
+            return True
 
 
 class TrackingStatus(Enum):
