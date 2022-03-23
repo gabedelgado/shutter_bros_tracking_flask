@@ -54,6 +54,7 @@ def getOrder(orderNum):
 
 
 @order.route("/delete/<orderNum>", methods=["POST"])
+@tokenRequired
 def deleteOrder(orderNum):
     if request.method == "POST":
         # add jwt verify here !!!!
