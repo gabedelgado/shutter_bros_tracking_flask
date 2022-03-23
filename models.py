@@ -2,6 +2,10 @@ from enum import Enum
 from mongoengine import Document, StringField, EnumField
 from bcrypt import gensalt, hashpw, checkpw
 import jwt
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 class User(Document):
@@ -10,24 +14,26 @@ class User(Document):
 
     def login(self, username, password):
         user = User.objects(username=username)
-
+        print(os.environ.get("TOKEN_SECRET"))
         if not user:
             return "couldnt find anyone with that username"
         elif (not checkpw(password.encode("utf-8"), user[0].password.encode("utf-8"))):
             return "the passwords did not match"
         else:
             token = jwt.encode(
-                {"user": str(user[0].id)}, "CHANGETHISPASSWORDTODOTENVSTUFF", algorithm="HS256")
+                {"user": str(user[0].id)}, os.environ.get("TOKEN_SECRET"), algorithm="HS256")
             return token
 
     def signup(self, username, password):
         if User.objects(username=username):
-            return False
+            return "this username was already taken"
         else:
             salt = gensalt()
             hashedpass = hashpw(password.encode("utf-8"), salt)
-            User(username=username, password=hashedpass).save()
-            return True
+            user = User(username=username, password=hashedpass).save()
+            token = jwt.encode(
+                {"user": str(user.id)}, os.environ.get("TOKEN_SECRET"), algorithm="HS256")
+            return token
 
 
 class TrackingStatus(Enum):

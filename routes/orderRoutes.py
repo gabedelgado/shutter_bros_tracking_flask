@@ -1,6 +1,11 @@
 from lib2to3.pgen2 import token
 from flask import Blueprint, request
 from functools import wraps
+import jwt
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 order = Blueprint("order", __name__)
 
@@ -10,6 +15,15 @@ order = Blueprint("order", __name__)
 def tokenRequired(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        if "Authorization" in request.headers:
+            token = request.headers["Authorization"].split(" ")[1]
+            try:
+                userid = jwt.decode(
+                    token, os.environ.get("TOKEN_SECRET"), algorithms=["HS256"])
+                # print(userid["user"])
+            except Exception as e:
+                return {"err": str(e)}, 401
+
         return f("extra stuff", *args, **kwargs)
     return decorated
 

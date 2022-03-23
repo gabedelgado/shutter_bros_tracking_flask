@@ -9,11 +9,7 @@ auth = Blueprint("auth", __name__)
 def signup():
     if request.method == "POST":
         username, password = request.form["username"], request.form["password"]
-        if User().signup(username, password):
-            return "signed up " + username
-        else:
-            return "something went wrong when trying to sign you up"
-        return "will sign you up here, check username does not exist in db, create new jwt token and send back"
+        return User().signup(username, password)
 
 
 @auth.route("/login", methods=["POST"])
