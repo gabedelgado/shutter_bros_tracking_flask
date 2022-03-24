@@ -14,26 +14,22 @@ class User(Document):
 
     def login(self, username, password):
         user = User.objects(username=username)
-        print(os.environ.get("TOKEN_SECRET"))
         if not user:
-            return "couldnt find anyone with that username"
+            return False
         elif (not checkpw(password.encode("utf-8"), user[0].password.encode("utf-8"))):
-            return "the passwords did not match"
+            return False
         else:
-            token = jwt.encode(
-                {"user": str(user[0].id)}, os.environ.get("TOKEN_SECRET"), algorithm="HS256")
-            return token
+            return user[0]
 
     def signup(self, username, password):
         if User.objects(username=username):
-            return "this username was already taken"
+            return False
         else:
             salt = gensalt()
             hashedpass = hashpw(password.encode("utf-8"), salt)
             user = User(username=username, password=hashedpass).save()
-            token = jwt.encode(
-                {"user": str(user.id)}, os.environ.get("TOKEN_SECRET"), algorithm="HS256")
-            return token
+
+            return user
 
 
 class TrackingStatus(Enum):
@@ -61,5 +57,7 @@ class Order(Document):
     orderNumber = StringField(required=True, unique=True)
     customerName = StringField(required=True)
     jobAddress = StringField(required=True)
-    trackingStatus = EnumField(TrackingStatus, default=TrackingStatus.PENDING)
-    permitStatus = EnumField(PermitStatus, default=PermitStatus.PENDING)
+    trackingStatus = EnumField(TrackingStatus, default=TrackingStatus.PENDING, choices=[TrackingStatus.PENDING, TrackingStatus.FINALMEASUREMENTSTAKEN, TrackingStatus.ORDERPLACED,
+                               TrackingStatus.PRODUCTSBEINGFABRICATED, TrackingStatus.ORDERSHIPPED, TrackingStatus.ORDERRECEIVED, TrackingStatus.QUALITYCONTROLINSPECTION, TrackingStatus.READYTOINSTALL, TrackingStatus.INSTALLATIONCOMPLETE])
+    permitStatus = EnumField(PermitStatus, default=PermitStatus.PENDING, choices=[
+                             PermitStatus.PENDING, PermitStatus.DOCUMENTSSIGNED,  PermitStatus.SUBMITTED,  PermitStatus.COUNTYREVIEW,  PermitStatus.REVISIONS,  PermitStatus.PERMITISSUED])

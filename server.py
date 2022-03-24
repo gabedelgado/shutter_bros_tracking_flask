@@ -7,6 +7,13 @@ from routes.orderRoutes import order
 from routes.authRoutes import auth
 # add method =[get post] params to all routes
 
+# TODO:
+# move jwt stuff back to routes, keep only db stuff inside model methods
+# get all orders
+# get one order
+# make random 10 digit code for tracking
+# create order
+
 
 app = Flask(__name__)
 
@@ -17,7 +24,7 @@ app.register_blueprint(auth, url_prefix="/api/auth")
 # connect to mongodb like this
 client = MongoClient("localhost", 27017)
 app.config['MONGODB_SETTINGS'] = {
-    'db': 'testflaskdb',
+    'db': 'shutterBrosTracking',
     'host': 'localhost',
     'port': 27017
 }
