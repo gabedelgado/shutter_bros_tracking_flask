@@ -1,36 +1,10 @@
-import json
-from lib2to3.pgen2 import token
 from flask import Blueprint, request, jsonify
-from functools import wraps
-import jwt
-from dotenv import load_dotenv
-import os
 from models import Order, TrackingStatus, PermitStatus
 import random
 import string
-
-load_dotenv()
+from middleware import tokenRequired
 
 order = Blueprint("order", __name__)
-
-
-# JWT authorization for certain routes
-def tokenRequired(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if "Authorization" in request.headers:
-            token = request.headers["Authorization"].split(" ")[1]
-            try:
-                userid = jwt.decode(
-                    token, os.environ.get("TOKEN_SECRET"), algorithms=["HS256"])
-                # print(userid["user"])
-            except Exception as e:
-                return {"err": str(e)}, 401
-        else:
-            return {"err": "No token found !"}, 401
-
-        return f(*args, **kwargs)
-    return decorated
 
 
 # route to get all orders, must send token
@@ -42,9 +16,8 @@ def getAll():
 
         return jsonify(orders)
 
+
 # route to create a new order, will mainly be called from Leap to Digital web hook, or from admin
-
-
 @order.route("/newOrder", methods=["POST"])
 def newOrder():
     if request.method == "POST":

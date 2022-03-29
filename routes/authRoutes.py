@@ -1,3 +1,4 @@
+from middleware import tokenRequired
 from flask import Blueprint, request
 import jwt
 from models import User
@@ -25,6 +26,7 @@ def signup():
 def login():
     if request.method == "POST":
         username, password = request.form['username'], request.form['password']
+
         user = User().login(username, password)
         if not user:
             return {"err": "The username or password was incorrect"}, 401
