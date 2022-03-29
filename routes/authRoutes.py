@@ -34,3 +34,9 @@ def login():
             token = jwt.encode(
                 {"user": str(user.id)}, os.environ.get("TOKEN_SECRET"), algorithm="HS256")
             return token
+
+
+@auth.route("/verifytoken", methods=["POST"])
+@tokenRequired
+def verifytoken():
+    return {"verified": "true"}, 200
