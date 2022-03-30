@@ -13,10 +13,13 @@ auth = Blueprint("auth", __name__)
 @tokenRequired
 def signup():
     if request.method == "POST":
-        username, password = request.form["username"], request.form["password"]
+        username, password, password2 = request.form[
+            "username"], request.form["password"], request.form["password2"]
+        if password != password2:
+            return {"err": "Passwords did not match."}, 401
         user = User().signup(username, password)
         if not user:
-            return {"err": "That username was already taken"}, 401
+            return {"err": "That username was already taken."}, 401
         else:
             token = jwt.encode(
                 {"user": str(user.id)}, os.environ.get("TOKEN_SECRET"), algorithm="HS256")
