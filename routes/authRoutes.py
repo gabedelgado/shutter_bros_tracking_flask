@@ -10,6 +10,7 @@ auth = Blueprint("auth", __name__)
 
 
 @auth.route("/signup", methods=["POST"])
+@tokenRequired
 def signup():
     if request.method == "POST":
         username, password = request.form["username"], request.form["password"]

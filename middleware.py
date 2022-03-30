@@ -12,7 +12,7 @@ def tokenRequired(f):
         load_dotenv()
         if "Authorization" in request.headers:
             token = request.headers["Authorization"]
-            # token = request.headers["Authorization"].split(" ")[1] USE THIS FOR POSTMAN TESTING
+            # token = request.headers["Authorization"].split(" ")[1]  # USE THIS FOR POSTMAN TESTING
             try:
                 userid = jwt.decode(
                     token, os.environ.get("TOKEN_SECRET"), algorithms=["HS256"])

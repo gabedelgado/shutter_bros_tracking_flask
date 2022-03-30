@@ -74,17 +74,25 @@ def updateOrder(orderNum):
 
     updated = False
 
-    if "tracking" in request.args:
-        if hasattr(TrackingStatus, request.args["tracking"]):
+    if "tracking" in request.form:
+        if hasattr(TrackingStatus, request.form["tracking"]):
             order.update(trackingStatus=TrackingStatus[
-                request.args["tracking"]].value)
+                request.form["tracking"]].value)
             updated = True
 
-    if "permit" in request.args:
-        if hasattr(PermitStatus, request.args["permit"]):
+    if "permit" in request.form:
+        if hasattr(PermitStatus, request.form["permit"]):
             updated = True
             order.update(
-                permitStatus=PermitStatus[request.args["permit"]].value)
+                permitStatus=PermitStatus[request.form["permit"]].value)
+
+    if "customerName" in request.form:
+        updated = True
+        order.update(customerName=request.form["customerName"])
+
+    if "jobAddress" in request.form:
+        updated = True
+        order.update(jobAddress=request.form["jobAddress"])
 
     if updated:
         return {"success": "Order updated successfully"}, 200
