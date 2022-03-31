@@ -16,10 +16,10 @@ def signup():
         username, password, password2 = request.form[
             "username"], request.form["password"], request.form["password2"]
         if password != password2:
-            return {"err": "Passwords did not match."}, 401
+            return "Passwords did not match.", 400
         user = User().signup(username, password)
         if not user:
-            return {"err": "That username was already taken."}, 401
+            return "That username was already taken.", 400
         else:
             token = jwt.encode(
                 {"user": str(user.id)}, os.environ.get("TOKEN_SECRET"), algorithm="HS256")
