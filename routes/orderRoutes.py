@@ -21,12 +21,16 @@ def getAll():
 @order.route("/newOrder", methods=["POST"])
 def newOrder():
     if request.method == "POST":
-        print("REQUEST ******************************************")
+        print("REQUEST *********************************************************************************************")
         print(request)
-        print("REQUEST.FORM ***************************")
+        print("REQUEST.FORM ******************************************************************************")
         print(request.form)
-        print("REQUEST.FORM KEYS ***************************")
+        print("REQUEST.FORM KEYS ******************************************************************************")
         print(request.form.keys())
+        print("IS JSON ? ******************************************************************************************************")
+        print(request.is_json)
+        print("JSON REQUEST ******************************************************************************************************************")
+        print(request.get_json())
         return {"stuff": "stuff"}, 200
         # customername = request.form["customerName"]
         # jobaddress = request.form["address"]
