@@ -41,7 +41,7 @@ class TrackingStatus(Enum):
     ORDERRECEIVED = "Order Received at Shutter Brothers"
     QUALITYCONTROLINSPECTION = "Quality Control Inspection"
     READYTOINSTALL = "Products Ready to be Installed"
-    INSTALLATIONCOMPLETE = "Installaion Complete"
+    INSTALLATIONCOMPLETE = "Installation Complete"
 
 
 class PermitStatus(Enum):
