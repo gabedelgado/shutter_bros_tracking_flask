@@ -1,5 +1,6 @@
 from enum import Enum
-from mongoengine import Document, StringField, EnumField
+from xmlrpc.client import Boolean
+from mongoengine import Document, StringField, EnumField, BooleanField
 from bcrypt import gensalt, hashpw, checkpw
 import jwt
 from dotenv import load_dotenv
@@ -57,6 +58,10 @@ class Order(Document):
     orderNumber = StringField(required=True, unique=True)
     customerName = StringField(required=True)
     jobAddress = StringField(required=True)
+    phoneNumber = StringField(required=False)
+    email = StringField(required=False)
+    textUpdates = BooleanField(required=True)
+    emailUpdates = BooleanField(required=True)
     trackingStatus = EnumField(TrackingStatus, default=TrackingStatus.PENDING, choices=[TrackingStatus.PENDING, TrackingStatus.FINALMEASUREMENTSTAKEN, TrackingStatus.ORDERPLACED,
                                TrackingStatus.PRODUCTSBEINGFABRICATED, TrackingStatus.ORDERSHIPPED, TrackingStatus.ORDERRECEIVED, TrackingStatus.QUALITYCONTROLINSPECTION, TrackingStatus.READYTOINSTALL, TrackingStatus.INSTALLATIONCOMPLETE])
     permitStatus = EnumField(PermitStatus, default=PermitStatus.PENDING, choices=[

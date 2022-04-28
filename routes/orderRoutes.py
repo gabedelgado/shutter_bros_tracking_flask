@@ -26,6 +26,8 @@ def newOrder():
             " " + customerdata["lastName"]
         jobaddress = "%s, %s, %s %s" % (
             customerdata["street"], customerdata["city"], customerdata["state"], customerdata["zipCode"])
+        customernumber = customerdata["phoneNumbers"][0]["number"]
+        customeremail = customerdata["emails"][0]["email"]
 
         # # create random 10 digit code
         ordernumber = ''.join(random.choices(
@@ -36,7 +38,7 @@ def newOrder():
                 string.ascii_uppercase + string.digits, k=10))
 
         neworder = Order(orderNumber=ordernumber,
-                         customerName=customername, jobAddress=jobaddress).save()
+                         customerName=customername, jobAddress=jobaddress, phoneNumber=customernumber, email=customeremail, textUpdates=True, emailUpdates=False).save()
         return jsonify(neworder)
 
         # # how can i secure this to only being called from the leaptodigital webhook
