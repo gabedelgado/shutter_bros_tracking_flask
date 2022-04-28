@@ -100,6 +100,36 @@ def updateOrder(orderNum):
         updated = True
         order.update(jobAddress=request.form["jobAddress"])
 
+    if "email" in request.form:
+        updated = True
+        order.update(email=request.form["email"])
+
+    if "phoneNumber" in request.form:
+        updated = True
+        order.update(phoneNumber=request.form["phoneNumber"])
+
+    if "textUpdates" in request.form:
+        updateValue = None
+        if request.form["textUpdates"].lower() == "false":
+            updateValue = False
+        else:
+            updateValue = True
+
+        if updateValue is not None:
+            order.update(textUpdates=updateValue)
+            updated = True
+
+    if "emailUpdates" in request.form:
+        updateValue = None
+        if request.form["textUpdates"].lower() == "false":
+            updateValue = False
+        else:
+            updateValue = True
+
+        if updateValue is not None:
+            order.update(emailUpdates=updateValue)
+            updated = True
+
     if updated:
         return {"success": "Order updated successfully"}, 200
     else:
