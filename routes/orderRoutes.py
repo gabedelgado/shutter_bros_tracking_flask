@@ -3,6 +3,10 @@ from models import Order, TrackingStatus, PermitStatus
 import random
 import string
 from middleware import tokenRequired
+from twilio.rest import Client
+import os
+from dotenv import load_dotenv
+
 
 order = Blueprint("order", __name__)
 
@@ -80,18 +84,6 @@ def updateOrder(orderNum):
 
     updated = False
 
-    if "tracking" in request.form:
-        if hasattr(TrackingStatus, request.form["tracking"]):
-            order.update(trackingStatus=TrackingStatus[
-                request.form["tracking"]].value)
-            updated = True
-
-    if "permit" in request.form:
-        if hasattr(PermitStatus, request.form["permit"]):
-            updated = True
-            order.update(
-                permitStatus=PermitStatus[request.form["permit"]].value)
-
     if "customerName" in request.form:
         updated = True
         order.update(customerName=request.form["customerName"])
@@ -129,6 +121,44 @@ def updateOrder(orderNum):
         if updateValue is not None:
             order.update(emailUpdates=updateValue)
             updated = True
+
+    if "tracking" in request.form:
+        if hasattr(TrackingStatus, request.form["tracking"]):
+
+            if order[0].trackingStatus.value != TrackingStatus[
+                    request.form["tracking"]].value and order[0].textUpdates == True:
+                load_dotenv()
+                account = os.environ.get("TWILIO_ACCOUNT")
+                token = os.environ.get("TWILIO_TOKEN")
+                client = Client(account, token)
+                message = "This is a Shutter Brothers Tracking update. Your tracking status has been updated to " + TrackingStatus[
+                    request.form["tracking"]].value.upper()
+                toNumber = "+1" + order[0].phoneNumber.replace("-", "")
+                client.messages.create(
+                    to=toNumber, from_="+16406008901", body=message)
+
+            order.update(trackingStatus=TrackingStatus[
+                request.form["tracking"]].value)
+            updated = True
+
+    if "permit" in request.form:
+        if hasattr(PermitStatus, request.form["permit"]):
+
+            if order[0].permitStatus.value != PermitStatus[
+                    request.form["permit"]].value and order[0].textUpdates == True:
+                load_dotenv()
+                account = os.environ.get("TWILIO_ACCOUNT")
+                token = os.environ.get("TWILIO_TOKEN")
+                client = Client(account, token)
+                message = "This is a Shutter Brothers Tracking update. Your permit status has been updated to " + PermitStatus[
+                    request.form["permit"]].value.upper()
+                toNumber = "+1" + order[0].phoneNumber.replace("-", "")
+                client.messages.create(
+                    to=toNumber, from_="+16406008901", body=message)
+
+            updated = True
+            order.update(
+                permitStatus=PermitStatus[request.form["permit"]].value)
 
     if updated:
         return {"success": "Order updated successfully"}, 200
