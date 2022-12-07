@@ -131,8 +131,8 @@ def updateOrder(orderNum):
                 account = os.environ.get("TWILIO_ACCOUNT")
                 token = os.environ.get("TWILIO_TOKEN")
                 client = Client(account, token)
-                message = "This is a Shutter Brothers Tracking update. Your tracking status has been updated to " + TrackingStatus[
-                    request.form["tracking"]].value.upper()
+                message = "This is a Shutter Brothers Tracking update for order " + orderNum + ". Your tracking status has been updated to " + TrackingStatus[
+                    request.form["tracking"]].value.upper() + ". To view your order status online, please visit https://shutterbrotherstracking.netlify.app/order/" + orderNum
                 toNumber = "+1" + order[0].phoneNumber.replace("-", "")
                 client.messages.create(
                     to=toNumber, from_="+16406008901", body=message)
@@ -150,8 +150,8 @@ def updateOrder(orderNum):
                 account = os.environ.get("TWILIO_ACCOUNT")
                 token = os.environ.get("TWILIO_TOKEN")
                 client = Client(account, token)
-                message = "This is a Shutter Brothers Tracking update. Your permit status has been updated to " + PermitStatus[
-                    request.form["permit"]].value.upper()
+                message = "This is a Shutter Brothers Tracking update for order " + orderNum + ". Your permit status has been updated to " + PermitStatus[
+                    request.form["permit"]].value.upper() + ". To view your permit status online, please visit https://shutterbrotherstracking.netlify.app/order/" + orderNum
                 toNumber = "+1" + order[0].phoneNumber.replace("-", "")
                 client.messages.create(
                     to=toNumber, from_="+16406008901", body=message)
