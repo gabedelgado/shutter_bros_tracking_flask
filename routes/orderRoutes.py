@@ -43,6 +43,18 @@ def newOrder():
 
         neworder = Order(orderNumber=ordernumber,
                          customerName=customername, jobAddress=jobaddress, phoneNumber=customernumber, email=customeremail, textUpdates=True, emailUpdates=False).save()
+
+        load_dotenv()
+        account = os.environ.get("TWILIO_ACCOUNT")
+        token = os.environ.get("TWILIO_TOKEN")
+        client = Client(account, token)
+        message = "Hello, from the Shutter Brothers Impact Windows and Doors team!\n\nWe thank you for trusting us with protecting your home and family. Our goal is to make the process as simple and informative as possible, with this tracking link you can see updates regarding your order, permit status, and work status. Check on order " + \
+            ordernumber + " below!\n" + \
+            "https://shutterbrotherstracking.netlify.app/order/" + ordernumber
+        toNumber = "+1" + customernumber.replace("-", "")
+        client.messages.create(
+            to=toNumber, from_="+16406008901", body=message)
+
         return jsonify(neworder)
 
         # # how can i secure this to only being called from the leaptodigital webhook
