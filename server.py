@@ -17,11 +17,26 @@ app.register_blueprint(auth, url_prefix="/api/auth")
 
 # Connecting to mongodb
 
-client = MongoClient(os.environ.get("MONGO_URI"))
+# *** production ***
+client = MongoClient(host=os.environ.get("MONGO_URI"), connect=False)
+
+# *** development ***
+# client = MongoClient(connect=False)
+
+# *** production ***
 app.config['MONGODB_SETTINGS'] = {
     'db': 'shutterBrosTracking',
-    'host': os.environ.get("MONGO_URI")
+    'host': os.environ.get("MONGO_URI"),
+    'connect': False
 }
+
+# *** development ***
+# app.config['MONGODB_SETTINGS'] = {
+#     'db': 'shutterBrosTracking',
+#     'host': 'localhost',
+#     'port': 27017,
+#     'connect': False
+# }
 
 # setup mongoengine for easier access/manipulation of mongo db
 db = MongoEngine(app)
